@@ -30,7 +30,10 @@ Download the MP3 track from a specific source order (list them with empty -s):
 var fs = require('fs'),
     thaletas = require('thaletas');
 
-thaletas('the beatles all my loving', function (err, track) {
+thaletas({
+    artist: 'the beatles',
+    title: 'all my loving'
+}, function (err, track) {
     if (!err && track) {
         track.pipe(fs.createWriteStream('out.mp3'));
     }
