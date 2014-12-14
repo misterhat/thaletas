@@ -1,0 +1,31 @@
+{
+  "name": "thaletas",
+  "version": "1.0.0",
+  "description": "Robustly find an MP3 for a track using multiple sources.",
+  "main": "index.js",
+  "bin": "./bin.js",
+  "keywords": [
+    "music",
+    "stream",
+    "mp3",
+    "download",
+    "grooveshark",
+    "hypem",
+    "music163",
+    "allmuz",
+    "youtube"
+  ],
+  "author": "Mister Hat <misterhat144@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "allmuz": "^1.0.2",
+    "async": "^0.9.0",
+    "grooveshark-streaming": "0.0.8",
+    "hypem-stream": "^1.0.1",
+    "minimist": "^1.1.0",
+    "mp3skull": "^1.0.0",
+    "needle": "^0.7.10",
+    "youtube-search": "^0.2.0",
+    "ytdl-core": "^0.2.4"
+  }
+}
