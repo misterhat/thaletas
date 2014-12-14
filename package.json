@@ -21,7 +21,6 @@
   "license": "MIT",
   "dependencies": {
     "allmuz": "^1.0.2",
-    "async": "^0.9.0",
     "fluent-ffmpeg": "^2.0.0-rc3",
     "grooveshark-streaming": "0.0.8",
     "hypem-stream": "^1.0.1",
