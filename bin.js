@@ -21,7 +21,18 @@ function help() {
     console.log(package.description + '\n');
 
     console.log('Usage: thaletas "<artist>" "<title>" [options]\n');
-    //console.log('\t
+
+    console.log(
+        '-o, --out [<path>]\n\tOutput the MP3 file to specified <path>. ' +
+        '\n\tIf path is empty, outputs to current directory. If no -o is\n\t' +
+        'present, stream MP3 to stdout.\n\n' +
+
+        '-s, --sources [<sources>]\n\tUse a specific source order for track ' +
+        'location.\n\tIf <sources> is empty, print out a list of usable ' +
+        'sources.\n\n' +
+
+        '-q, --quiet\n\tDon\'t output progress.'
+    );
 }
 
 if (sources === true) {
@@ -54,6 +65,10 @@ thaletas({
 
     if (!out) {
         return song.pipe(process.stdout);
+    }
+
+    if (out === true) {
+        out = __dirname;
     }
 
     fs.stat(out, function (err, stats) {
