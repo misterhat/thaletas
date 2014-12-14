@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Robustly find an MP3 for a track using multiple sources.",
   "main": "index.js",
-  "bin": "./bin.js",
+  "bin": {
+    "thaletas": "./bin.js"
+  },
   "keywords": [
     "music",
     "stream",
@@ -27,5 +29,14 @@
     "needle": "^0.7.10",
     "youtube-search": "^0.2.0",
     "ytdl-core": "^0.2.4"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/misterhat/thaletas.git"
+  },
+  "bugs": {
+    "url": "https://github.com/misterhat/thaletas/issues"
+  },
+  "homepage": "https://github.com/misterhat/thaletas"
 }
