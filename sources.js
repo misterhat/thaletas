@@ -1,8 +1,9 @@
 var allmuz = require('allmuz'),
     ffmpeg = require('fluent-ffmpeg'),
     grooveshark = require('grooveshark-streaming').Grooveshark.getStreamingUrl,
-    hypem = require('hypem-stream'),
+    mp3monkey = require('mp3monkey'),
     mp3skull = require('mp3skull'),
+    mp3zap = require('mp3zap'),
     needle = require('needle'),
     tinysong = require('grooveshark-streaming').Tinysong.getSongInfo,
     youtube = require('youtube-search'),
@@ -12,17 +13,29 @@ var sources = {};
 
 function firstDirect(search, terms, done) {
     search(terms.artist + ' ' + terms.title, function (err, tracks) {
+        var track;
+
         if (err) {
             return done(err);
         }
 
         try {
-            direct = tracks[0].direct;
+            track = tracks[0]
         } catch (e) {
             return done(new Error('No song found.'));
         }
 
-        done(null, direct);
+        if (!track) {
+            return done();
+        }
+
+        if (track.song) {
+            return done(null, track.song);
+        } else if (track.direct) {
+            return done(null, needle.get(track.direct));
+        }
+
+        done();
     });
 }
 
@@ -47,14 +60,10 @@ sources.youtube = function (terms, done) {
             }
         });
 
-        video = ffmpeg(video).toFormat('mp3').pipe();
+        video = ffmpeg(video).format('mp3').pipe();
 
         done(null, video);
     });
-};
-
-sources.hypem = function (terms, done) {
-    firstDirect(hypem.search, terms, done);
 };
 
 sources.allmuz = function (terms, done) {
@@ -63,6 +72,14 @@ sources.allmuz = function (terms, done) {
 
 sources.mp3skull = function (terms, done) {
     firstDirect(mp3skull, terms, done);
+};
+
+sources.mp3zap = function (terms, done) {
+    firstDirect(mp3zap, terms, done);
+};
+
+sources.mp3monkey = function (terms, done) {
+    firstDirect(mp3monkey, terms, done);
 };
 
 sources.music163 = function (terms, done) {
@@ -108,7 +125,7 @@ sources.music163 = function (terms, done) {
                 return done(new Error('No MP3 link found.'));
             }
 
-            done(null, mp3);
+            done(null, needle.get(mp3, { headers: headers }));
         });
     });
 };
@@ -123,7 +140,13 @@ sources.grooveshark = function (terms, done) {
             return done(new Error('No song found.'));
         }
 
-        grooveshark(song.SongID, done);
+        grooveshark(song.SongID, function (err, url) {
+            if (err) {
+                return done(err);
+            }
+
+            done(null, needle.get(url));
+        });
     });
 };
 

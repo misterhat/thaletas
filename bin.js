@@ -2,80 +2,79 @@
 var fs = require('fs'),
 
     minimist = require('minimist'),
-    thaletas = require('./'),
 
-    package = require('./package');
+    package = require('./package'),
+    song,
+
+    thaletas;
 
 var argv = minimist(process.argv.slice(2)),
 
     artist = argv._[0],
-    title = argv._[1],
-
-    // A list of comma separated spaces of the sources to use and which order.
-    sources = argv.sources || argv.s,
+    help = argv.help || argv.h,
     out = argv.out || argv.o,
-    quiet = argv.quiet || argv.q;
+    sources = argv.sources || argv.s,
+    title = argv._[1],
+    version = argv.version || argv.v;
 
-function help() {
-    console.log(package.name + ' - ' + package.version);
+function showHelp() {
     console.log(package.description + '\n');
 
     console.log('Usage: thaletas "<artist>" "<title>" [options]\n');
 
     console.log(
-        '-o, --out [<path>]\n\tOutput the MP3 file to specified <path>. ' +
-        '\n\tIf path is empty, outputs to current directory. If no -o is\n\t' +
-        'present, stream MP3 to stdout.\n\n' +
+        '-o, --out [<path>]\n\tOutput the MP3 file to specified path. If ' +
+        'no -o is present,\n\tstream MP3 to stdout.\n\n' +
 
-        '-s, --sources [<sources>]\n\tUse a specific source order for track ' +
-        'location.\n\tIf <sources> is empty, print out a list of usable ' +
-        'sources.\n\n' +
+        '-s, --sources [<sources>]\n\tA comma-separated list of sources to' +
+        'find the track.\n\tLeave empty to dump list of sources.\n\n' +
 
-        '-q, --quiet\n\tDon\'t output progress.'
+        '-h, --help\n\tOutput the help.\n\n' +
+        '-v, --version\n\tOutput the version.'
     );
 }
 
+if (help) {
+    return showHelp();
+}
+
+if (version) {
+    return console.log(package.version);
+}
+
 if (sources === true) {
-    return console.log(Object.keys(thaletas.sources).join('\n'));
+    return console.log(require('./').sources.join('\n'));
 }
 
 if (!artist || !title) {
-    return help();
+    return showHelp();
 }
 
 if (typeof sources === 'string') {
     sources = sources ? sources.split(',') : undefined;
 }
 
-if (!quiet) {
-    console.error('searching for "' + artist + ' - ' + title + '"...');
-}
+thaletas = require('./');
 
-thaletas({
+song = thaletas({
     artist: artist,
     title: title
-}, sources, function (err, song, source) {
-    if (err) {
-        return console.error(err);
-    }
+}, sources);
 
-    if (!quiet) {
-        console.error('found at ' + source + '!');
-    }
+if (!out) {
+    return song.pipe(process.stdout);
+}
 
-    if (!out) {
-        return song.pipe(process.stdout);
-    }
+if (out === true) {
+    out = __dirname;
+}
 
-    if (out === true) {
-        out = __dirname;
-    }
-
-    fs.stat(out, function (err, stats) {
+fs.stat(out, function (err, stats) {
+    try {
         if (stats.isDirectory()) {
             out += '/' + artist + ' - ' + title + '.mp3';
         }
+    } catch (e) { }
 
-        song.pipe(fs.createWriteStream(out));
-    });
+    song.pipe(fs.createWriteStream(out));
 });

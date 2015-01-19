@@ -1,17 +1,19 @@
-var needle = require('needle'),
+var stream = require('stream'),
+
+    needle = require('needle'),
 
     sources = require('./sources');
 
 var DEFAULT_ORDER = [
-    'grooveshark', 'music163', 'allmuz', 'hypem', 'youtube', 'mp3skull'
+    'mp3monkey', 'allmuz', 'mp3zap', 'music163', 'mp3skull', 'grooveshark',
+    'youtube'
 ];
 
 function findSong(terms, order, done) {
     var source, current;
 
-    if (!done) {
-        done = order;
-        order = null;
+    if (terms.track && !terms.title) {
+        terms.title = terms.track;
     }
 
     if (!order || !order.length) {
@@ -35,7 +37,7 @@ function findSong(terms, order, done) {
     }
 
     sources[current](terms, function (err, song) {
-        if (err) {
+        if (err || !song) {
             if (order.length > 1) {
                 return findSong(terms, order.slice(1), done);
             } else {
@@ -43,13 +45,25 @@ function findSong(terms, order, done) {
             }
         }
 
-        if (typeof song === 'string') {
-            song = needle.get(song);
-        }
-
-        done(null, song, current);
+        done(null, song);
     });
 }
 
-module.exports = findSong;
-module.exports.sources = sources;
+function getSong(terms, order) {
+    var song = new stream.PassThrough();
+
+    findSong(terms, order, function (err, stream) {
+        if (err) {
+            return process.nextTick(function () {
+                song.emit('error', err);
+            });
+        }
+
+        stream.pipe(song);
+    });
+
+    return song;
+}
+
+module.exports = getSong;
+module.exports.sources = DEFAULT_ORDER;
