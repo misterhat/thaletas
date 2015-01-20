@@ -1,6 +1,6 @@
 {
   "name": "thaletas",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Robustly find an MP3 for a track using multiple sources.",
   "main": "index.js",
   "bin": {

@@ -15,7 +15,7 @@ For the module:
 ### CLI
 Find a track and save it to `out.mp3`:
 
-    $ thaletas happiness is a warm gun -a 'the beatles' > out.mp3
+    $ thaletas "the beatles" "happiness is a warm gun" > out.mp3
 
 Find a track, save it and stream it as it downloads:
 
