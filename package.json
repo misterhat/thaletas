@@ -1,6 +1,6 @@
 {
   "name": "thaletas",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Robustly find an MP3 for a track using multiple sources.",
   "main": "index.js",
   "bin": {
@@ -24,11 +24,11 @@
     "grooveshark-streaming": "0.0.8",
     "minimist": "^1.1.0",
     "mp3monkey": "^1.0.0",
-    "mp3skull": "^1.0.0",
+    "mp3skull": "^1.0.2",
     "mp3zap": "^1.0.0",
-    "needle": "^0.7.10",
+    "needle": "^0.9.0",
     "youtube-search": "^0.2.0",
-    "ytdl-core": "^0.3.1"
+    "ytdl-core": "^0.5.1"
   },
   "devDependencies": {},
   "repository": {
